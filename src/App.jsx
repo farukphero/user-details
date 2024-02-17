@@ -5,9 +5,7 @@ import {
   Card,
   CardHeader,
   CardBody,
-  CardFooter,
   Typography,
-  Button,
 } from "@material-tailwind/react";
 
 function App() {
@@ -16,11 +14,17 @@ function App() {
   const [errorMessage, setErrorMessage] = useState("");
   useEffect(() => {
     try {
+      setLoading(true);
       fetch("https://swapi.dev/api/people")
         .then((res) => res.json())
-        .then((data) => setUsers(data.results));
+        .then((data) => {
+          setUsers(data.results);
+
+          setLoading(false);
+        });
     } catch (error) {
-      console.log(error);
+      setErrorMessage(error);
+      setLoading(false);
     }
   }, []);
 
@@ -88,7 +92,11 @@ function App() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {users?.map((user) => (
           <>
-            <Card key={user._id} className="mt-6 w-96" style={{ backgroundColor: user.hair_color }}>
+            <Card
+              key={user._id}
+              className="mt-6 w-96"
+              style={{ backgroundColor: user.hair_color }}
+            >
               <CardHeader color="blue-gray" className="relative h-56">
                 <img src="https://picsum.photos/200/300" alt="card-image" />
               </CardHeader>
@@ -101,7 +109,6 @@ function App() {
                 <Typography>Gender: {user.gender}</Typography>
                 <Typography>Vehicles:{user.vehicles.length}</Typography>
               </CardBody>
-              
             </Card>
           </>
         ))}
